@@ -1,0 +1,44 @@
+{
+ "q01_string_read": [],
+ "q02_string_value": [],
+ "q03_string_miss": [],
+ "q04_string_desc": [],
+ "q05_string_short": [
+  "RegisterReceiver.apk::classes.dex | LRegisterReceiver$1;->onReceive | matched=(Extra: ; Raw: )",
+  "ServiceBinder.apk::classes.dex | LServiceBinder;->execute | matched=(drozerHandler)",
+  "ServiceBinder.apk::classes.dex | LServiceBinder;->printBundle | matched=(Internal Bundle)",
+  "ServiceBinder.apk::classes.dex | LServiceBinder;->printData | matched=(Extras\n; Printing Bundle Data)"
+ ],
+ "q06_type_exact": [],
+ "q07_type_fuzzy": [
+  "ByteStreamReader.apk::classes.dex | LByteStreamReader;->read | matched=(Ljava/io/ByteArrayOutputStream;)",
+  "ByteStreamReader.apk::classes.dex | LByteStreamReader;->read | matched=(Ljava/io/ByteArrayOutputStream;)",
+  "FileUtil.apk::classes.dex | LFileUtil;->md5sum | matched=(Ljava/io/FileInputStream;)",
+  "FileUtil.apk::classes.dex | LFileUtil;->read | matched=(Ljava/io/BufferedInputStream;; Ljava/io/FileInputStream;)",
+  "Native.apk::classes.dex | LNative;->get | matched=(Ljava/io/ByteArrayOutputStream;)",
+  "ShellWrapper.apk::classes.dex | LShellWrapper$CommandReader;->run | matched=(Ljava/io/BufferedReader;; Ljava/io/InputStreamReader;)",
+  "ShellWrapper.apk::classes.dex | LShellWrapper;->execute | matched=(Ljava/io/File;)",
+  "ZipUtil.apk::classes.dex | LZipUtil;->unzip | matched=(Ljava/io/BufferedInputStream;; Ljava/io/BufferedOutputStream;; Ljava/io/File;; Ljava/io/FileInputStream;; Ljava/io/FileOutputStream;)"
+ ],
+ "q09_type_miss": [],
+ "q10_method_name": [
+  "ByteStreamReader.apk::classes.dex | LByteStreamReader;->read | matched=(Ljava/io/InputStream;->read)",
+  "ByteStreamReader.apk::classes.dex | LByteStreamReader;->read | matched=(Ljava/io/InputStream;->read)",
+  "FileUtil.apk::classes.dex | LFileUtil;->md5sum | matched=(Ljava/io/FileInputStream;->read)",
+  "FileUtil.apk::classes.dex | LFileUtil;->read | matched=(Ljava/io/BufferedInputStream;->read)",
+  "JdwpBroker.apk::classes.dex | LJdwpBroker;->readPid | matched=(Ljava/io/InputStream;->read)",
+  "Native.apk::classes.dex | LNative;->get | matched=(Ljava/io/InputStream;->read)",
+  "ShellWrapper.apk::classes.dex | LShellWrapper$CommandReader;->run | matched=(Ljava/io/BufferedReader;->readLine)",
+  "ZipUtil.apk::classes.dex | LZipUtil;->unzip | matched=(Ljava/util/zip/ZipInputStream;->read)"
+ ],
+ "q11_method_short": [
+  "ByteStreamReader.apk::classes.dex | LByteStreamReader;->read | matched=(Ljava/io/ByteArrayOutputStream;->write)",
+  "ByteStreamReader.apk::classes.dex | LByteStreamReader;->read | matched=(Ljava/io/ByteArrayOutputStream;->write)",
+  "ByteStreamWriter.apk::classes.dex | LByteStreamWriter;->writeHexStream | matched=(Ljava/io/OutputStream;->write)",
+  "Native.apk::classes.dex | LNative;->get | matched=(Ljava/io/ByteArrayOutputStream;->write)",
+  "ZipUtil.apk::classes.dex | LZipUtil;->unzip | matched=(Ljava/io/BufferedOutputStream;->write)"
+ ],
+ "q12_method_miss": [],
+ "q13_field_name": [],
+ "q14_field_miss": []
+}

@@ -1,0 +1,85 @@
+services:
+  postgres:
+    container_name: findu-postgres
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-findu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?请在 .env 设置 POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-findu}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-findu} -d ${POSTGRES_DB:-findu}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  findu:
+    container_name: findu-findu
+    image: ${FINDU_IMAGE:-findu:local}:${FINDU_TAG:-latest}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      FINDU_PG_DSN: postgres://${POSTGRES_USER:-findu}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-findu}?sslmode=disable
+      FINDU_DB_DSN: postgres://${POSTGRES_USER:-findu}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-findu}?sslmode=disable
+      # 挂载 findu 前端与工具层（P2/P3/P4）
+      FINDU_ENABLE: "1"
+      # 关闭 robots 中间件：findu 前端有长轮询，同一会话会被互踢
+      FINDU_SKIP_ROBOTS: "1"
+      # findu AI 通道密钥（config-findu.yaml 用 ${FINDU_LLM_API_KEY} 引用）
+      FINDU_LLM_API_KEY: ${FINDU_LLM_API_KEY}
+      # 可选通道密钥透传（config-findu.yaml 用 ${VAR} 引用；交互式部署用
+      # scripts/secret_wizard.sh 把值写进 .env，或直接编辑 config-findu.yaml）
+      FOFA_API_KEY: ${FOFA_API_KEY:-}
+      ZOOMEYE_API_KEY: ${ZOOMEYE_API_KEY:-}
+      QUAKE_API_KEY: ${QUAKE_API_KEY:-}
+      SHODAN_API_KEY: ${SHODAN_API_KEY:-}
+      FINDU_TYPESAFE_API_KEY: ${FINDU_TYPESAFE_API_KEY:-}
+      FINDU_VISION_API_KEY: ${FINDU_VISION_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      FINDU_LLM_PROVIDER: ${FINDU_LLM_PROVIDER:-}
+      FINDU_LLM_MODEL: ${FINDU_LLM_MODEL:-}
+      FINDU_LLM_BASE_URL: ${FINDU_LLM_BASE_URL:-}
+      FINDU_LLM_PROXY: ${FINDU_LLM_PROXY:-}
+    ports:
+      - "8081:8081"
+      - "127.0.0.1:8788:8788"
+    command: ["-addr", ":8081", "-proxy", ":8788"]
+    volumes:
+      # 把数据目录（含 jwt.key、SQLite 等）绑定到项目根目录的 data/，
+      # 方便在宿主机直接查看/备份，容器重建也不丢。
+      - ./data:/app/data
+      # JWT 签名密钥：独立目录，不能放进 data（data 是 /api/workspace 的可浏览根）
+      - ./keys:/app/keys
+      # 把项目根目录的 skills 挂进容器（覆盖镜像内置的 /app/skills）；
+      # 改 skill 无需重建镜像，容器读的就是宿主机这份。
+      - ./skills:/app/skills
+      # supervisor / deep 子代理 Markdown；改分类只重启容器，不重建镜像。
+      - ./agents:/app/agents:ro
+      # 漏洞知识库源文件（1520 个产品目录 / 5233 篇）。只读挂载，启动时 upsert 进 vuln_kb 表。
+      - ./vulnkb:/app/vulnkb:ro
+      # 宿主机二进制：只重建二进制时不用重建镜像（start.sh 优先跑这份）
+      - ./dist/amd64/findu:/app/findu:ro
+      - ./start.sh:/app/start.sh:ro
+      # findu 旧前端：只读挂载，避免容器 recreate 后回退到镜像里的旧页面。
+      # 回退到镜像内置版本时删除这一行并重建容器。
+      - ./web-findu:/app/web-findu:ro
+      # findu 子系统配置：宿主为真源（external-mcp 注册写进这份），容器重建不丢。
+      - ./config-findu.yaml:/app/config-findu.yaml
+    restart: unless-stopped
+    # 复用 findu 的 ollama（知识库 embedding），容器间直连其服务名
+    networks:
+      - default
+      - findu_net
+
+volumes:
+  pgdata:
+    name: findu_findu_pgdata
+
+networks:
+  findu_net:
+    external: true
+    name: findu_default

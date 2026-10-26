@@ -1,0 +1,31 @@
+{
+  "id": "intel",
+  "name": "漏洞情报与知识库",
+  "version": "1.0.0",
+  "kind": "dataset",
+  "api_version": "1.0",
+  "description": "1day 漏洞库、自动抓取的漏洞情报与指纹规则的入口插件；本批迁入 HTTP 入口与生命周期，存储仍复用 domain/finding。",
+  "provides": {
+    "datasets": [
+      "vuln_kb",
+      "vuln_intel",
+      "fingerprint_rules",
+      "fingerprint_sources"
+    ],
+    "routes": [
+      "GET /api/vulnkb",
+      "GET /api/vulnkb/stats",
+      "GET /api/vulnkb/{id}",
+      "GET /api/vulnintel",
+      "POST /api/vulnintel/refresh",
+      "GET /api/vulnintel/status"
+    ]
+  },
+  "owns_tables": [
+    "fingerprint_rules",
+    "fingerprint_sources",
+    "vuln_kb",
+    "vuln_intel"
+  ],
+  "permissions": ["db.read"]
+}

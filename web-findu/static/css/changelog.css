@@ -1,0 +1,130 @@
+/* 版本记录页（changelog）—— 与平台主题变量联动，自动适配明/暗色 */
+
+.changelog-page .page-content {
+    max-width: 1100px;
+}
+
+.changelog-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.changelog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.changelog-empty {
+    padding: 28px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.changelog-day {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    overflow: hidden;
+}
+
+.changelog-day-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.changelog-date {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.changelog-count {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.changelog-entry {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.changelog-entry:last-child {
+    border-bottom: none;
+}
+
+.changelog-entry-title {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.changelog-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.changelog-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-color);
+}
+
+.changelog-tag {
+    flex: 0 0 auto;
+    font-size: 11px;
+    line-height: 18px;
+    padding: 0 7px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.changelog-text {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.changelog-text code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: var(--bg-tertiary);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+/* 类型标签配色（浅色） */
+.is-new      { background: rgba(40, 167, 69, .14);   color: #1f8a3b; }
+.is-improve  { background: rgba(0, 102, 255, .14);   color: #0052cc; }
+.is-fix      { background: rgba(220, 53, 69, .14);   color: #c82333; }
+.is-decision { background: rgba(124, 58, 237, .14);  color: #6d28d9; }
+.is-risk     { background: rgba(255, 193, 7, .22);   color: #a06a00; }
+.is-review   { background: rgba(108, 117, 125, .16); color: #5a6268; }
+.is-pending  { background: rgba(255, 87, 34, .14);   color: #c2410c; }
+.is-other    { background: rgba(108, 117, 125, .12); color: var(--text-secondary); }
+
+/* 类型标签配色（暗色） */
+html[data-theme="dark"] .is-new      { background: rgba(74, 222, 128, .16);  color: #4ade80; }
+html[data-theme="dark"] .is-improve  { background: rgba(96, 165, 250, .16);  color: #60a5fa; }
+html[data-theme="dark"] .is-fix      { background: rgba(248, 113, 113, .16); color: #f87171; }
+html[data-theme="dark"] .is-decision { background: rgba(167, 139, 250, .18); color: #a78bfa; }
+html[data-theme="dark"] .is-risk     { background: rgba(251, 191, 36, .18);  color: #fbbf24; }
+html[data-theme="dark"] .is-review   { background: rgba(148, 163, 184, .16); color: #94a3b8; }
+html[data-theme="dark"] .is-pending  { background: rgba(251, 146, 60, .18);  color: #fb923c; }
+html[data-theme="dark"] .is-other    { background: rgba(148, 163, 184, .12); color: #94a3b8; }

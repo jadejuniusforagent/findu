@@ -1,0 +1,63 @@
+{
+  "": "https://findu.local/contracts/event-contract.schema.json",
+  "title": "Runtime Event Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "ts",
+    "seq"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "session.created",
+        "session.closed",
+        "turn.created",
+        "token.delta",
+        "tool.call.started",
+        "tool.call.finished",
+        "plan.updated",
+        "artifact.created",
+        "error",
+        "c2.listener.started",
+        "c2.listener.stopped",
+        "c2.session.opened",
+        "c2.session.closed",
+        "c2.task.dispatched",
+        "c2.task.completed"
+      ]
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "turn_id": {
+      "type": "string"
+    },
+    "delivery": {
+      "enum": [
+        "at_least_once",
+        "at_most_once"
+      ],
+      "default": "at_least_once"
+    },
+    "idempotency_key": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

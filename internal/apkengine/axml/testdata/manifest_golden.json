@@ -1,0 +1,10 @@
+{
+ "package": "com.github.skylot.simple",
+ "version_name": "1.0",
+ "permissions": [],
+ "activities": [
+  "com.github.skylot.simple.MainActivity"
+ ],
+ "services": [],
+ "main_activity": "com.github.skylot.simple.MainActivity"
+}

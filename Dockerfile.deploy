@@ -1,0 +1,159 @@
+# syntax=docker/dockerfile:1
+#
+# FindUAI —— 本机部署构建入口（）
+#
+# 为什么单独一个文件：仓库根的 Dockerfile 是上游 CI 用的，依赖 deb.nodesource.com
+# 等外网源，且不含 findu 子系统资产，本机用它构建必失败/必缺文件。
+# 本机构建命令见 redeploy.sh，或：
+#   docker build -f Dockerfile.deploy -t findu:p4 .
+#
+#
+# 相对上游 Dockerfile 的差异**只有下载源**，业务逻辑零改动：
+#   1. Debian apt 源            → mirrors.aliyun.com
+#   2. Node 20 安装方式         → npmmirror 发行包（替代 deb.nodesource.com）
+#   3. npm 全局包 registry      → registry.npmmirror.com
+#   4. Playwright chromium 下载 → cdn.npmmirror.com/binaries/playwright
+#
+# 运行镜像（不在镜像里编译）：只装常用工具 + 放入预编译好的 Linux 单二进制。
+# 本地构建二进制：
+#   cd web && npm run build:static && cd ..
+#   cp -r web/out server/webui/dist
+#   CGO_ENABLED=0 GOARCH=amd64 go build -tags embedui -o dist/amd64/findu ./cmd/findu
+#   docker build -f Dockerfile.wsl -t findu:local .
+FROM python:3.12-slim-bookworm
+ARG TARGETARCH
+
+# ---------- Debian 源换阿里云 ----------
+RUN set -eux; \
+    for f in /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources; do \
+      if [ -f "$f" ]; then \
+        sed -i 's|deb.debian.org|mirrors.aliyun.com|g; s|security.debian.org|mirrors.aliyun.com|g' "$f"; \
+      fi; \
+    done
+
+# ---------- 常用工具（含 xz-utils，供 Node 解压）----------
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates ripgrep curl wget vim git jq unzip xz-utils \
+      dnsutils iputils-ping netcat-openbsd inetutils-telnet whois nmap \
+    && rm -rf /var/lib/apt/lists/*
+
+# ---------- 渗透测试工具（P3：findu 的 89 个 YAML 配方需要有真二进制才注册）----------
+# 只装 Debian 12 源里有的；nuclei/ffuf/subfinder 等 Go 工具从 findu 旧镜像 COPY（见下），
+# 不从 GitHub 下（构建期网络受限）。缺的工具不进配方注册，模型不会调到空壳。
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      sqlmap masscan hydra binwalk libimage-exiftool-perl arp-scan dnsenum \
+      dirb whatweb gobuster fierce nbtscan samba-common-bin gdb \
+      hashcat john foremost steghide binutils vim-common xxd \
+      python3-pwntools python3-impacket \
+    && rm -rf /var/lib/apt/lists/*
+
+# ---------- Node 20（npmmirror 发行包，替代 NodeSource）----------
+ARG NODE_VER=v20.20.2
+RUN curl -fsSL -o /tmp/node.tar.xz \
+      "https://cdn.npmmirror.com/binaries/node/${NODE_VER}/node-${NODE_VER}-linux-x64.tar.xz" \
+    && tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 \
+    && rm -f /tmp/node.tar.xz \
+    && node --version && npm --version
+
+# ---------- Playwright MCP / CLI + chromium（走 npmmirror）----------
+ENV PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright
+RUN npm install -g --registry=https://registry.npmmirror.com \
+      @playwright/mcp@latest @playwright/cli@latest playwright@latest \
+    && playwright-cli --help \
+    && playwright install --with-deps chromium \
+    && rm -rf /var/lib/apt/lists/*
+
+# 报告 docx 渲染依赖（report/pybuilder/report_builder.py 需要 python-docx）
+RUN pip install --no-cache-dir python-docx
+
+# ---------- 渗透工具：Go 静态二进制取自 findu 旧镜像（P3）----------
+# 复用已编译好的工具，避免构建期访问 GitHub。构建前该镜像必须存在：
+#   docker tag <任一含这些工具的镜像> finduai:local
+# 取不到时这层会失败——这是有意的：静默少装工具会让配方注册数量悄悄变少。
+COPY --from=finduai:local /usr/local/bin/nuclei      /usr/local/bin/nuclei
+COPY --from=finduai:local /usr/local/bin/ffuf        /usr/local/bin/ffuf
+COPY --from=finduai:local /usr/local/bin/subfinder   /usr/local/bin/subfinder
+COPY --from=finduai:local /usr/local/bin/katana      /usr/local/bin/katana
+COPY --from=finduai:local /usr/local/bin/dalfox      /usr/local/bin/dalfox
+COPY --from=finduai:local /usr/local/bin/gau         /usr/local/bin/gau
+COPY --from=finduai:local /usr/local/bin/waybackurls /usr/local/bin/waybackurls
+COPY --from=finduai:local /usr/local/bin/rustscan    /usr/local/bin/rustscan
+COPY --from=finduai:local /usr/local/bin/x8          /usr/local/bin/x8
+COPY --from=finduai:local /usr/local/bin/jaeles      /usr/local/bin/jaeles
+COPY --from=finduai:local /usr/local/bin/amass       /usr/local/bin/amass
+COPY --from=finduai:local /usr/local/bin/pwninit     /usr/local/bin/pwninit
+
+# 渗透辅助工具走 PyPI（阿里云镜像）；逐个装，单个失败只打日志不中断构建。
+RUN for pkg in dirsearch arjun wafw00f ropper volatility3 netexec enum4linux-ng smbmap bloodhound; do \
+      pip install --no-cache-dir --index-url https://mirrors.aliyun.com/pypi/simple/ "$pkg" \
+        && echo "[pip] ok $pkg" || echo "[pip] skip $pkg"; \
+    done
+
+# ---------- 补充工具：把“因缺二进制未接入”的配方补齐 ----------
+# 背景：90 个 findu 配方里只有 49 个能接入，其余多因可执行文件不存在。
+# 这里只补 Debian bookworm / PyPI / RubyGems / GitHub release 上确实可获取的，
+# 拿不到的不硬塞（radare2/nikto/xsser 在 bookworm 已移除，fscan 资源名不符）。
+# ruby 的 gem 装 wpscan 需要编译原生扩展 → 临时装 build-essential，装完再清掉。
+RUN set -eux; \
+    apt-get -o Acquire::Retries=5 update; \
+    apt-get install -y --no-install-recommends gobuster ruby ruby-dev build-essential; \
+    gem install --no-document wpscan zsteg one_gadget; \
+    apt-get purge -y --auto-remove build-essential; \
+    rm -rf /var/lib/apt/lists/*
+
+# kube-hunter 依赖 netifaces（源码包，需编译）→ 这里再临时装一次编译工具并清掉。
+RUN set -eux; \
+    apt-get -o Acquire::Retries=5 update; \
+    apt-get install -y --no-install-recommends build-essential; \
+    pip install --no-cache-dir volatility3 kube-hunter checksec.py; \
+    apt-get purge -y --auto-remove build-essential; \
+    rm -rf /var/lib/apt/lists/*
+
+RUN set -eux; \
+    curl -fsSL -o /tmp/feroxbuster.tar.gz https://github.com/epi052/feroxbuster/releases/latest/download/x86_64-linux-feroxbuster.tar.gz; \
+    tar -xzf /tmp/feroxbuster.tar.gz -C /usr/local/bin feroxbuster; \
+    rm -f /tmp/feroxbuster.tar.gz; \
+    curl -fsSL -o /usr/local/bin/linpeas.sh https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh; \
+    chmod +x /usr/local/bin/feroxbuster /usr/local/bin/linpeas.sh; \
+    ln -sf /usr/local/bin/vol /usr/local/bin/volatility3
+
+# enum4linux-ng 不在 PyPI，用源码包 + 其 requirements.txt（避免运行期缺依赖）
+RUN set -eux; \
+    curl -fsSL -o /tmp/e4l.tar.gz https://github.com/cddmp/enum4linux-ng/archive/refs/heads/master.tar.gz; \
+    tar -xzf /tmp/e4l.tar.gz -C /opt; \
+    rm -f /tmp/e4l.tar.gz; \
+    pip install --no-cache-dir -r /opt/enum4linux-ng-master/requirements.txt; \
+    chmod +x /opt/enum4linux-ng-master/enum4linux-ng.py; \
+    ln -sf /opt/enum4linux-ng-master/enum4linux-ng.py /usr/local/bin/enum4linux-ng
+
+WORKDIR /app
+# 预编译好的对应架构二进制（dist/amd64/findu 或 dist/arm64/findu）
+COPY dist/${TARGETARCH}/findu /app/findu
+# 守护启动脚本：进程退出后按退出码决定是否重新拉起，页面一键更新靠它完成换装。
+COPY start.sh /app/start.sh
+RUN chmod +x /app/findu /app/start.sh
+COPY skills/ /app/skills/
+
+# ---------- findu 的资源（P3：配方工具桥接 + /findu/ 挂载都要）----------
+# config-findu.yaml 里的相对路径按「配置文件所在目录」解析，因此这些目录
+# 必须落在 /app 下：configs/toolrecipes 是配方源，configs/roles 是角色，
+# knowledge_base / web-findu 是知识库与 findu 前端。
+# 敏感配置（api_key/密码等）不进镜像：镜像内置 config-findu.yaml.template（占位、
+# 密钥全空、可传播）；真实 config-findu.yaml 由 redeploy.sh 在运行时挂载覆盖。
+COPY config-findu.yaml.template /app/config-findu.yaml
+COPY configs/         /app/configs/
+# supervisor / deep 子代理（Markdown）+ 知识库：属业务数据，不随镜像传播。
+# 镜像内置空目录兜底（防止不带挂载直接 run 时目录缺失报错），真实内容由
+# redeploy.sh 在运行时 -v 挂载（agents/、knowledge_base/）。
+RUN mkdir -p /app/agents /app/knowledge_base
+COPY web-findu/       /app/web-findu/
+# 版本记录页的数据源（handler 按 config-findu.yaml 同级 docs/ 解析）
+COPY docs/CHANGELOG.md /app/docs/CHANGELOG.md
+# findu 静态资源清单：部署后 verify_deploy.sh 在容器内比对 /app/web-findu 与基线
+COPY scripts/findu_static_manifest.py /app/scripts/findu_static_manifest.py
+COPY docs/refactor/findu-static-baseline.json /app/docs/refactor/findu-static-baseline.json
+# data/（SQLite + jwt.key）持久化点
+VOLUME ["/app/data"]
+EXPOSE 8081 8788
+ENTRYPOINT ["/app/start.sh"]
+CMD ["-addr", ":8081", "-proxy", ":8788"]

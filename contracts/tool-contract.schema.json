@@ -1,0 +1,207 @@
+{
+  "": "https://findu.local/contracts/tool-contract.schema.json",
+  "title": "Tool Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "kind"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]{1,63}$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 8
+    },
+    "kind": {
+      "enum": [
+        "builtin",
+        "recipe",
+        "mcp",
+        "external"
+      ]
+    },
+    "input_schema": {
+      "type": "object"
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "timeout_ms": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 3600000
+    },
+    "idempotent": {
+      "type": "boolean"
+    },
+    "side_effect": {
+      "enum": [
+        "none",
+        "read",
+        "write",
+        "destructive",
+        "network"
+      ]
+    },
+    "targets": {
+      "description": "目标声明：本次调用的外部目标从哪些输入字段提取（guard 逐目标授权校验的依据；缺省 = 无目标扩展，不进 scope 门禁）",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "kind"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "description": "输入参数字段，点号分隔嵌套路径（如 args.targets）"
+          },
+          "kind": {
+            "enum": [
+              "domain",
+              "ip",
+              "cidr",
+              "url"
+            ]
+          }
+        }
+      }
+    },
+    "credentials": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sandbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "network": {
+          "type": "boolean"
+        },
+        "filesystem": {
+          "enum": [
+            "none",
+            "read",
+            "readwrite"
+          ]
+        },
+        "max_output_bytes": {
+          "type": "integer"
+        }
+      }
+    },
+    "streaming": {
+      "type": "boolean"
+    },
+    "cost_hint": {
+      "enum": [
+        "cheap",
+        "normal",
+        "expensive"
+      ]
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "exec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "type": "string"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowed_exit_codes": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "cwd": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    "parameters": {
+      "description": "配方参数定义；数组形式为参数列表，对象形式为命名分组",
+      "type": [
+        "object",
+        "array"
+      ]
+    },
+    "short_description": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "command": {
+      "type": "string"
+    },
+    "args": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowed_exit_codes": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "kind": {
+          "const": "recipe"
+        },
+        "command": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    {
+      "properties": {
+        "kind": {
+          "enum": [
+            "builtin",
+            "mcp",
+            "external"
+          ]
+        }
+      },
+      "required": [
+        "input_schema",
+        "output_schema"
+      ]
+    }
+  ]
+}

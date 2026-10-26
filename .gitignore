@@ -1,0 +1,133 @@
+# backend
+/data/
+*.db
+*.db-wal
+*.db-shm
+config.json
+scheduler_state.json
+__pycache__/
+*.pyc
+*.pyo
+
+# frontend
+web/node_modules/
+web/.next/
+web/tsconfig.tsbuildinfo
+web/next-env.d.ts
+*.local
+
+# development tools
+.playwright-mcp/
+.playwright-cli/
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# docs
+/docs/*
+!/docs/refactor/
+
+# os
+.DS_Store
+Thumbs.db
+
+# claude code local state
+.claude/
+
+# 内嵌前端的单二进制产物
+/findu
+# 运行日志绝不提交（含真实任务目标/LLM 流量；曾在 b39ee22 误入一次）
+/findu.log
+# 手动留存的旧二进制备份
+/findu.prev*
+/findu.old-*
+# 一键更新在可执行文件旁留下的中间产物（暂存件 / 备份 / 失败版本 / 升级标记）
+/findu.new
+/findu.new.sha256
+/findu.old
+/findu.failed
+/findu.upgrade.json
+/server/webui/dist/
+/dist/
+
+# JWT 签名密钥（运行时生成，存项目根，绝不提交）
+/jwt.key
+
+# 容器运行时生成的密钥/证书目录（含 JWT 私钥，绝不提交）
+/keys/
+
+# 本地临时 / 分析 / 截图等产物（绝不提交）
+/log/
+/.temp/
+/analysis/
+*.png
+/skills/design-taste-frontend/
+
+# Docker 部署生成的本地环境（含密码/密钥，不提交）
+.env
+
+# 调度器运行/模拟产生的事件日志（测试产物，不提交）
+*-events.csv
+
+# bench 基准测试相关（本地产物，不提交）
+/bench/
+/Dockerfile.bench
+/Dockerfile.bench.v2
+
+# P3 构建产物
+.deploy/out/
+
+# 测试/诊断运行日志（目录内产物，只留在磁盘不提交）
+/internal/app/log/*.log
+
+# third_party：第三方上游源码锚点（内嵌外部 git 仓库，含独立 .git，绝不当普通文件提交；
+# 后续更新用 third_party/rea 内的 git pull，findu 侧只记录放置决策）
+/third_party/
+
+# ── 私有化配置与本地产物（绝不提交）────────────────────────────
+# 真实运行时配置（含 API 密钥/目标数据）——只提交 config-findu.yaml.template 占位版
+config-findu.yaml
+
+# 根目录编译产物（构建生成，不入库）
+/layercheck
+/migrate
+
+# frontend 静态导出产物（.deploy/build_web.sh 重新生成）
+web/out/
+
+# AI 编码工具本地工作产物（计划/会话）
+.zcode/
+
+# 待审批技能（未批准前不入库；批准哪个就单独 git add 哪个目录）
+/skills/analyzing-typosquatting-domains-with-dnstwist/
+/skills/building-adversary-infrastructure-tracking-system/
+/skills/building-threat-actor-profile-from-osint/
+/skills/cloud-saas-exposure/
+/skills/conducting-external-reconnaissance-with-osint/
+/skills/continuous-exposure-monitoring/
+/skills/detecting-shadow-it-cloud-usage/
+/skills/detecting-typosquatting-packages-in-npm-pypi/
+/skills/detecting-typosquatting-packages/
+/skills/email-domain-security/
+/skills/exposure-risk-quantification/
+/skills/generating-threat-intelligence-reports/
+/skills/identity-provider-recon/
+/skills/implementing-attack-surface-management/
+/skills/monitoring-darkweb-sources/
+/skills/offensive-osint/
+/skills/org-attack-surface/
+/skills/osint-autopilot/
+/skills/osint-methodology/
+/skills/performing-ai-driven-osint-correlation/
+/skills/performing-brand-monitoring-for-impersonation/
+/skills/performing-cloud-asset-inventory-with-cartography/
+/skills/performing-dark-web-monitoring-for-threats/
+/skills/performing-osint-with-spiderfoot/
+/skills/performing-paste-site-monitoring-for-credentials/
+/skills/performing-subdomain-enumeration-with-subfinder/
+/skills/tracking-threat-actor-infrastructure/
+
+
+# vulnkb 为本地数据资产（含实战环境信息），不入库
+/vulnkb/

@@ -1,0 +1,26 @@
+.git
+**/node_modules
+web/.next
+web/out
+server/webui/dist
+/findu
+data
+*.db
+transcripts
+bench/kv
+bench/debug
+bench/__pycache__
+bench/.env
+bench/scheduler.py
+bench/entrypoint_v2.sh
+bench/seed_v2.sh
+
+# 敏感：JWT 密钥 / 真实 config（含 api_key 等）不进入构建上下文与镜像。
+# 镜像内置 config-findu.yaml.template 为占位，真实 config 运行时挂载。
+keys
+keys/
+config-findu.yaml
+.env
+# 业务数据不随镜像传播（运行时挂载）
+agents
+knowledge_base

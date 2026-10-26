@@ -1,0 +1,500 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Theme preset styles: these override CSS variables based on the selected data-theme-preset */
+@import "../styles/presets/brutalist.css";
+@import "../styles/presets/soft-pop.css";
+@import "../styles/presets/tangerine.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+}
+
+/* Default theme styles (used when no data-theme-preset is set or when 'default' is selected).
+These serve as the fallback; there is no separate default.css file. */
+:root {
+  --radius: 0.625rem;
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* fonts */
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), system-ui, sans-serif;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-2xs {
+    box-shadow: var(--shadow-2xs);
+  }
+
+  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-xs {
+    box-shadow: var(--shadow-xs);
+  }
+
+  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-sm {
+    box-shadow: var(--shadow-sm);
+  }
+
+  [data-theme-preset]:not([data-theme-preset="default"]) .shadow {
+    box-shadow: var(--shadow);
+  }
+
+  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-md {
+    box-shadow: var(--shadow-md);
+  }
+
+  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-lg {
+    box-shadow: var(--shadow-lg);
+  }
+
+  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-xl {
+    box-shadow: var(--shadow-xl);
+  }
+
+  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-2xl {
+    box-shadow: var(--shadow-2xl);
+  }
+
+  html[data-font="inter"] body {
+    --font-sans: var(--font-inter);
+  }
+  html[data-font="notoSans"] body {
+    --font-sans: var(--font-noto-sans);
+  }
+  html[data-font="nunitoSans"] body {
+    --font-sans: var(--font-nunito-sans);
+  }
+  html[data-font="figtree"] body {
+    --font-sans: var(--font-figtree);
+  }
+  html[data-font="roboto"] body {
+    --font-sans: var(--font-roboto);
+  }
+  html[data-font="geist"] body {
+    --font-sans: var(--font-geist);
+  }
+  html[data-font="raleway"] body {
+    --font-sans: var(--font-raleway);
+  }
+  html[data-font="dmSans"] body {
+    --font-sans: var(--font-dm-sans);
+  }
+  html[data-font="publicSans"] body {
+    --font-sans: var(--font-public-sans);
+  }
+  html[data-font="outfit"] body {
+    --font-sans: var(--font-outfit);
+  }
+  html[data-font="geistMono"] body {
+    --font-sans: var(--font-geist-mono);
+  }
+  html[data-font="geistPixelSquare"] body {
+    --font-sans: var(--font-geist-pixel-square);
+  }
+  html[data-font="jetBrainsMono"] body {
+    --font-sans: var(--font-jetbrains-mono);
+  }
+  html[data-font="notoSerif"] body {
+    --font-sans: var(--font-noto-serif);
+  }
+  html[data-font="robotoSlab"] body {
+    --font-sans: var(--font-roboto-slab);
+  }
+  html[data-font="merriweather"] body {
+    --font-sans: var(--font-merriweather);
+  }
+  html[data-font="lora"] body {
+    --font-sans: var(--font-lora);
+  }
+  html[data-font="playfairDisplay"] body {
+    --font-sans: var(--font-playfair-display);
+  }
+}
+
+html {
+  overscroll-behavior: none;
+}
+
+.disable-transitions * {
+  transition: none !important;
+}
+
+[data-print-root] {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: Letter;
+    margin: 0;
+  }
+
+  html,
+  body {
+    width: 8.5in !important;
+    height: 11in !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body > *:not([data-print-root]) {
+    display: none !important;
+  }
+
+  [data-print-root] {
+    display: block !important;
+    width: 8.5in !important;
+    height: 11in !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    background: white !important;
+  }
+
+  [data-print-root] [data-print-paper] {
+    width: 8.5in !important;
+    height: 11in !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  [data-print-root] [data-print-paper],
+  [data-print-root] [data-print-paper] * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* ===== findu 统一视觉层 =====
+ * 目的：控制台（Next.js/shadcn）与主界面（findu web-findu）视觉一致。
+ * 取值全部来自 web-findu/static/css/style.css 的 :root / html[data-theme="dark"]：
+ *   light  bg #ffffff / 页底 #f8f9fa / 三级 #f1f3f5 / 文字 #1a1a1a · #6c757d · #adb5bd
+ *          边框 #e9ecef / 主色 #0066ff / 成功 #28a745 / 警告 #ffc107 / 危险 #dc3545
+ *   dark   bg #111827 / 页底 #0b1120 / 三级 #1f2937 / 文字 #e5e7eb · #a7b0c0 · #6b7280
+ *          边框 #263244 / 主色 #60a5fa / 成功 #34d399 / 警告 #fbbf24 / 危险 #f87171
+ * 本段为不带 @layer 的普通 CSS，位于文件末尾：优先级高于 tailwind utilities，
+ * 也高于上方 :root 与 [data-theme-preset] 预设（同特异性、后出现者胜）。
+ */
+
+:root,
+.dark {
+  /* 字体：主界面用系统栈；控制台原先走 Geist webfont，统一掉 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  /* 圆角：主界面卡片 8px、输入框 6~8px；控制台原 10px */
+  --radius: 0.5rem;
+}
+
+/* ---------- 亮色 ---------- */
+:root {
+  --background: #f8f9fa;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #0066ff;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f3f5;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f1f3f5;
+  --muted-foreground: #6c757d;
+  --accent: #f1f3f5;
+  --accent-foreground: #1a1a1a;
+  --destructive: #dc3545;
+  --border: #e9ecef;
+  --input: #e9ecef;
+  --ring: #0066ff;
+  --chart-1: #0066ff;
+  --chart-2: #28a745;
+  --chart-3: #ffc107;
+  --chart-4: #7c3aed;
+  --chart-5: #adb5bd;
+  --sidebar: #f8f9fa;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #0066ff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(0, 102, 255, 0.06);
+  --sidebar-accent-foreground: #0066ff;
+  --sidebar-border: #e9ecef;
+  --sidebar-ring: #0066ff;
+}
+
+/* ---------- 暗色 ---------- */
+.dark {
+  --background: #0b1120;
+  --foreground: #e5e7eb;
+  --card: #111827;
+  --card-foreground: #e5e7eb;
+  --popover: #111827;
+  --popover-foreground: #e5e7eb;
+  --primary: #60a5fa;
+  --primary-foreground: #0b1120;
+  --secondary: #1f2937;
+  --secondary-foreground: #e5e7eb;
+  --muted: #1f2937;
+  --muted-foreground: #a7b0c0;
+  --accent: #1f2937;
+  --accent-foreground: #e5e7eb;
+  --destructive: #f87171;
+  --border: #263244;
+  --input: #263244;
+  --ring: #60a5fa;
+  --chart-1: #60a5fa;
+  --chart-2: #34d399;
+  --chart-3: #fbbf24;
+  --chart-4: #a78bfa;
+  --chart-5: #6b7280;
+  --sidebar: #111827;
+  --sidebar-foreground: #e5e7eb;
+  --sidebar-primary: #60a5fa;
+  --sidebar-primary-foreground: #0b1120;
+  --sidebar-accent: rgba(96, 165, 250, 0.14);
+  --sidebar-accent-foreground: #60a5fa;
+  --sidebar-border: #263244;
+  --sidebar-ring: #60a5fa;
+}
+
+/* ---------- 侧栏：纯色 + 右边框（去掉 shadcn 浮动圆角卡片） ---------- */
+[data-slot="sidebar-inner"] {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-shadow: 0 0 #0000 !important;
+  background: var(--background);
+}
+/* 亮色 framed-sheet：侧栏 = 博客同款光谱渐变（180deg 纵向，8 段全 10% 叠底色，
+ * 与顶栏 90deg 横向渐变在左上角同色序衔接）；暗色保持纯色 */
+html:not(.dark) [data-slot="sidebar-inner"] {
+  background: linear-gradient(180deg, rgba(247, 149, 51, 0.1), rgba(243, 112, 85, 0.1) 15%, rgba(239, 78, 123, 0.1) 30%, rgba(161, 102, 171, 0.1) 44%, rgba(80, 115, 184, 0.1) 58%, rgba(16, 152, 173, 0.1) 72%, rgba(7, 179, 155, 0.1) 86%, rgba(109, 186, 130, 0.1)), var(--background);
+  background-attachment: fixed;
+}
+[data-slot="sidebar-container"] {
+  border-right: 1px solid var(--border);
+  box-shadow: none;
+}
+/* 亮色 framed-sheet：L 型框一体，侧栏右边框去掉（frame 与 sheet 靠 sheet 自身边框分隔） */
+html:not(.dark) [data-slot="sidebar-container"] {
+  border-right: none;
+}
+[data-slot="sidebar-gap"] {
+  background: transparent;
+}
+
+/* ---------- 侧栏分组标签：11px / 600 / 大写字距，与主界面同款 ---------- */
+[data-slot="sidebar-group-label"] {
+  padding: 16px 19px 6px !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+  opacity: 0.72;
+  color: var(--muted-foreground) !important;
+  height: auto !important;
+}
+
+/* ---------- 侧栏菜单项：直角 + 左 3px 强调条 + 15px 字号 ---------- */
+[data-sidebar="menu-button"] {
+  border-radius: 0 !important;
+  padding: 10px 16px !important;
+  height: auto !important;
+  min-height: 40px;
+  gap: 10px !important;
+  font-size: 0.9375rem !important;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+[data-sidebar="menu-button"] svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+[data-sidebar="menu-button"]:hover {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+[data-sidebar="menu-button"][data-active="true"],
+[data-sidebar="menu-button"][aria-current="page"] {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  border-left-color: transparent;
+  font-weight: 500 !important;
+}
+[data-sidebar="menu-button"][data-active="true"] svg,
+[data-sidebar="menu-button"][aria-current="page"] svg {
+  color: var(--foreground);
+}
+
+/* ---------- 侧栏子菜单项：激活/悬停统一为中性灰（与顶级一致，去蓝） ---------- */
+[data-slot="sidebar-menu-sub-button"][data-active="true"] {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+[data-slot="sidebar-menu-sub-button"][data-active="true"] svg {
+  color: var(--foreground);
+}
+[data-slot="sidebar-menu-sub-button"]:hover {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+
+/* ---------- 顶栏：60px + 纯色 + 底部边框（去渐变/投影） ---------- */
+[data-slot="sidebar-inset"] > header {
+  height: 60px !important;
+  padding: 0 24px;
+  background: var(--background) !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid var(--border) !important;
+  box-shadow: none;
+}
+/* 亮色 framed-sheet：顶栏与 inset 同为 90deg 横向渐变（L 型框的横臂），
+ * 与侧栏竖臂左上角衔接；底边框去掉（框内无分隔线） */
+html:not(.dark) [data-slot="sidebar-inset"] {
+  background: linear-gradient(90deg, rgba(247, 149, 51, 0.1), rgba(243, 112, 85, 0.1) 15%, rgba(239, 78, 123, 0.1) 30%, rgba(161, 102, 171, 0.1) 44%, rgba(80, 115, 184, 0.1) 58%, rgba(16, 152, 173, 0.1) 72%, rgba(7, 179, 155, 0.1) 86%, rgba(109, 186, 130, 0.1)), var(--background);
+  background-attachment: fixed;
+}
+html:not(.dark) [data-slot="sidebar-inset"] > header {
+  background: linear-gradient(90deg, rgba(247, 149, 51, 0.1), rgba(243, 112, 85, 0.1) 15%, rgba(239, 78, 123, 0.1) 30%, rgba(161, 102, 171, 0.1) 44%, rgba(80, 115, 184, 0.1) 58%, rgba(16, 152, 173, 0.1) 72%, rgba(7, 179, 155, 0.1) 86%, rgba(109, 186, 130, 0.1)), var(--background) !important;
+  background-attachment: fixed !important;
+  border-bottom: none !important;
+}
+
+/* ---------- 卡片：白底 + 1px 边框 + 8px 圆角（flat，无投影） ---------- */
+[data-slot="card"] {
+  border-radius: 8px !important;
+  box-shadow: none;
+}
+
+/* 字体全覆盖：registry 里 html[data-font="xxx"] body { font-family: ... } 的
+ * 特异性高于 :root 变量覆盖，故这里在 body 维度直接压掉（含 !important）。 */
+html body,
+html[data-font] body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+}
+html[data-font] {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-heading: var(--font-sans);
+}

@@ -1,0 +1,52 @@
+{
+  "": "https://findu.local/contracts/ui-slot-contract.schema.json",
+  "title": "UI Slot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "plugin",
+    "path"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$"
+    },
+    "type": {
+      "enum": [
+        "nav.item",
+        "nav.group",
+        "page.route",
+        "page.tab",
+        "dashboard.card",
+        "settings.section"
+      ]
+    },
+    "plugin": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string"
+    },
+    "group": {
+      "type": "string"
+    },
+    "order": {
+      "type": "integer"
+    },
+    "permission": {
+      "type": "string"
+    },
+    "props_schema": {
+      "type": "object"
+    }
+  }
+}

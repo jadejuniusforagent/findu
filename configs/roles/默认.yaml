@@ -1,0 +1,5 @@
+name: 默认
+description: 默认角色，不额外携带用户提示词，使用默认MCP
+user_prompt: 开工前先看 skill 工具描述里的 available_skills 列表，本轮任务命中其中任一技能时，必须先调用 skill 加载该技能的完整流程再动手。
+icon: "\U0001F535"
+enabled: true

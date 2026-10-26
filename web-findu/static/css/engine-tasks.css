@@ -1,0 +1,138 @@
+/* 引擎任务（findu 渗透引擎）只读视图 —— 挂在 findu 任务管理页的第二个 tab。
+   只用既有变量与表格骨架，不新增主题色，避免与 style.css 的暗/亮两套配色打架。 */
+
+.tasks-view-tabs {
+    display: flex;
+    gap: 4px;
+    margin: 0 0 12px;
+    border-bottom: 1px solid var(--border-color, rgba(127, 127, 127, 0.25));
+}
+
+.engine-tasks-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 0 12px;
+}
+
+.engine-tasks-toolbar .tasks-search-input {
+    min-width: 240px;
+    flex: 0 1 320px;
+}
+
+.engine-tasks-summary {
+    margin-left: auto;
+    font-size: 12px;
+    opacity: 0.72;
+    white-space: nowrap;
+}
+
+.engine-tasks-table td.engine-task-id {
+    width: 64px;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+}
+
+.engine-tasks-table .engine-task-title {
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.engine-tasks-table .engine-task-sub {
+    margin-top: 2px;
+    font-size: 12px;
+    opacity: 0.66;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-all;
+}
+
+.engine-tasks-table tr.engine-task-row.is-running .engine-task-title::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: 6px;
+    border-radius: 50%;
+    background: var(--color-success, #22c55e);
+    vertical-align: middle;
+    animation: engine-task-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes engine-task-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+}
+
+.engine-task-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+.engine-task-badge.is-running {
+    color: #166534;
+    background: rgba(34, 197, 94, 0.16);
+    border-color: rgba(34, 197, 94, 0.45);
+}
+
+.engine-task-badge.is-success {
+    color: #14532d;
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.engine-task-badge.is-pending {
+    color: #1e40af;
+    background: rgba(59, 130, 246, 0.14);
+    border-color: rgba(59, 130, 246, 0.35);
+}
+
+.engine-task-badge.is-warning {
+    color: #92400e;
+    background: rgba(245, 158, 11, 0.16);
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.engine-task-badge.is-danger {
+    color: #991b1b;
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.engine-tasks-table td.engine-task-num,
+.engine-tasks-table td.engine-task-time {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    opacity: 0.85;
+}
+
+.engine-tasks-empty {
+    padding: 28px 12px;
+    text-align: center;
+    opacity: 0.6;
+}
+
+html[data-theme-mode='dark'] .engine-task-badge.is-running,
+html[data-theme-mode='dark'] .engine-task-badge.is-success {
+    color: #86efac;
+}
+
+html[data-theme-mode='dark'] .engine-task-badge.is-pending {
+    color: #93c5fd;
+}
+
+html[data-theme-mode='dark'] .engine-task-badge.is-warning {
+    color: #fcd34d;
+}
+
+html[data-theme-mode='dark'] .engine-task-badge.is-danger {
+    color: #fca5a5;
+}
